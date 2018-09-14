@@ -1573,7 +1573,10 @@ Dask Name: {name}, {task} tasks""".format(klass=self.__class__.__name__,
 
     @derived_from(pd.DataFrame)
     def isin(self, values):
-        return elemwise(M.isin, self, list(values))
+        if isinstance(values, _Frame):
+            return elemwise(M.isin, self, values)
+        else:
+            return elemwise(M.isin, self, list(values))
 
     @derived_from(pd.DataFrame)
     def astype(self, dtype):
@@ -2017,7 +2020,11 @@ Dask Name: {name}, {task} tasks""".format(klass=self.__class__.__name__,
 
     @derived_from(pd.Series)
     def isin(self, values):
-        return elemwise(M.isin, self, list(values))
+        if isinstance(values, _Frame):
+            print('!!! ', values.compute())
+            return elemwise(M.isin, self, values)
+        else:
+            return elemwise(M.isin, self, list(values))
 
     @insert_meta_param_description(pad=12)
     @derived_from(pd.Series)

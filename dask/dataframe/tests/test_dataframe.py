@@ -754,6 +754,17 @@ def test_isin():
     # DataFrame test
     assert_eq(d.isin([0, 1, 2]), full.isin([0, 1, 2]))
 
+    idx = pd.Series(data=[0, 1, 2])
+    d_idx = dd.from_pandas(idx, npartitions=1)
+
+    print(d.a.isin(d_idx).compute())
+    print(full.a.isin(idx))
+    # Series test with dask Series
+    assert_eq(d.a.isin(d_idx), full.a.isin(idx))
+
+    # Dataframe test with dask Series
+    #assert_eq(d.isin(d_idx), full.isin(idx))
+
 
 def test_len():
     assert len(d) == len(full)
